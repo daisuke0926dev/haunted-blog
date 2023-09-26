@@ -22,7 +22,7 @@ class BlogsController < ApplicationController
   end
 
   def create
-    @blog = current_user.blogs.new(blog_params)
+    @blog = current_user.blogs.new(check_and_override(blog_params))
 
     if @blog.save
       redirect_to blog_url(@blog), notice: 'Blog was successfully created.'
@@ -32,7 +32,7 @@ class BlogsController < ApplicationController
   end
 
   def update
-    if @blog.update(blog_params)
+    if @blog.update(check_and_override(blog_params))
       redirect_to blog_url(@blog), notice: 'Blog was successfully updated.'
     else
       render :edit, status: :unprocessable_entity
@@ -53,5 +53,10 @@ class BlogsController < ApplicationController
 
   def blog_params
     params.require(:blog).permit(:title, :content, :secret, :random_eyecatch)
+  end
+
+  def check_and_override(params)
+    params[:random_eyecatch] = '0' if !current_user.premium? && params[:random_eyecatch]&.==('1')
+    params
   end
 end
