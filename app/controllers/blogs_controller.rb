@@ -10,7 +10,7 @@ class BlogsController < ApplicationController
   end
 
   def show
-    render file: 'public/404.html' if @blog.secret? && !@blog.owned_by?(current_user)
+    raise ActiveRecord::RecordNotFound, 'Record not found' if @blog.secret? && !@blog.owned_by?(current_user)
   end
 
   def new
@@ -18,7 +18,7 @@ class BlogsController < ApplicationController
   end
 
   def edit
-    redirect_to blog_url(@blog) if !@blog.owned_by?(current_user)
+    raise ActiveRecord::RecordNotFound, 'Record not found' if !@blog.owned_by?(current_user)
   end
 
   def create
