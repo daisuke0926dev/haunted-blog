@@ -60,7 +60,7 @@ class BlogsController < ApplicationController
   end
 
   def check_and_override(params)
-    params[:random_eyecatch] = '0' if !current_user.premium? && params[:random_eyecatch]&.==('1')
+    params[:random_eyecatch] = false if !current_user.premium? && params[:random_eyecatch]
     params
   end
 end
