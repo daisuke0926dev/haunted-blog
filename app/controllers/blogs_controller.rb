@@ -32,6 +32,8 @@ class BlogsController < ApplicationController
   end
 
   def update
+    raise ActiveRecord::RecordNotFound, 'Record not found' if !@blog.owned_by?(current_user)
+
     if @blog.update(check_and_override(blog_params))
       redirect_to blog_url(@blog), notice: 'Blog was successfully updated.'
     else
@@ -40,6 +42,8 @@ class BlogsController < ApplicationController
   end
 
   def destroy
+    raise ActiveRecord::RecordNotFound, 'Record not found' if !@blog.owned_by?(current_user)
+
     @blog.destroy!
 
     redirect_to blogs_url, notice: 'Blog was successfully destroyed.', status: :see_other
